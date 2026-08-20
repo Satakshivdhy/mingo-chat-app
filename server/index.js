@@ -9,6 +9,10 @@ import AuthRouter from "./src/router/authRouter.js";
 import UserRouter from "./src/router/userRouter.js";
 import connectDB from "./src/config/db.js";
 
+import http from 'http';
+import { Server } from 'socket.io';
+import WebSocket from "./src/config/webSocket.js";
+
 const app = express();
 
 // Middlewares
@@ -38,7 +42,7 @@ app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal server error";
   console.error("❌ Error:", err);
-  res.status(statusCode).json({success: false, message });
+  res.status(statusCode).json({ success: false, message });
 });
 
 // Not found handler
@@ -47,7 +51,19 @@ app.use((err, req, res, next) => {
 // });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  connectDB();
+
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["http://localhost:5173"],
+    credentials: true,
+    methods: ["GET", "POST"]
+  },
+});
+
+WebSocket(io);
+
+httpServer.listen(PORT, async () => {
+  await connectDB();
   console.log("Server is running on port", PORT);
 });

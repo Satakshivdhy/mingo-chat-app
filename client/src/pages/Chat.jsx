@@ -4,6 +4,8 @@ import Chatting from "../components/chat/Chatting";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import api from "../config/api";
+import socketAPI from "../config/webSocket";
+// import toaster from "react-hot-toast";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -29,8 +31,16 @@ const Chat = () => {
   useEffect(() => {
     if (!isLogin) {
       navigate("/login");
-    } else {
+    } 
+    if(isLogin && user?.id){
       fetchRecentUsers();
+      socketAPI.emit("user:online", user._id);
+    }
+
+    return () => {
+      if(user?.id){
+        socketAPI.emit("user:disconnect", user._id);
+      }
     }
   }, []);
 
