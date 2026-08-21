@@ -1,11 +1,10 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { userData } from "../assets/dummy";
 import Chatting from "../components/chat/Chatting";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import api from "../config/api";
 import socketAPI from "../config/webSocket";
-// import toaster from "react-hot-toast";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -14,7 +13,6 @@ const Chat = () => {
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [isOpenChat, setIsOpenChat] = useState(false);
 
-  // console.log(recentUser);
   const fetchRecentUsers = async () => {
     // Simulate fetching recent users from an API
     try {
@@ -25,40 +23,40 @@ const Chat = () => {
     }
   };
 
-  const currentUser = 1;
+  // console.log(user);
+  //const currentUser = 1;
   console.log(recentUser);
 
   useEffect(() => {
     if (!isLogin) {
       navigate("/login");
-    } 
-    if(isLogin && user?.id){
+    }
+
+    if (isLogin && user) {
+      socketAPI.emit("OmBhramyaNamah", user._id);
       fetchRecentUsers();
-      socketAPI.emit("user:online", user._id);
     }
 
     return () => {
-      if(user?.id){
-        socketAPI.emit("user:disconnect", user._id);
-      }
-    }
+      socketAPI.emit("OmNamahShivay", user._id);
+    };
   }, []);
 
   return (
     <>
-     {isLogin && (
+      {isLogin && (
         <div className="flex gap-2">
           <div className="w-3/17 bg-base-200">
             <h1>Recent Chats</h1>
 
-          {recentUser.length > 0 &&
-              recentUser.map((user, idx) => (
+            {recentUser.length > 0 &&
+              recentUser.map((friend, idx) => (
                 <div
                   key={idx}
-                  onClick={() => (setSelectedFriend(user), setIsOpenChat(true))}
+                  onClick={() => { setSelectedFriend(friend); setIsOpenChat(true); }}
                   className="cursor-pointer"
                 >
-                  {user.fullName}
+                  {friend.fullName}
                 </div>
               ))}
           </div>
@@ -66,14 +64,14 @@ const Chat = () => {
             {selectedFriend ? (
               <Chatting
                 selectedFriend={selectedFriend}
-                currentUser={currentUser}
+                currentUser={user}
               />
             ) : (
               <div>Select a Friend to start chat</div>
             )}
           </div>
         </div>
-          )}
+      )}
     </>
   );
 };

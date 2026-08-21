@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../config/api";
-import {useAuth} from "../context/AuthContext";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -109,4 +109,4 @@ const Login = () => {
   );
 };
 
-export default Login
+export default Login;
