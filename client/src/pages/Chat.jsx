@@ -33,12 +33,12 @@ const Chat = () => {
     }
 
     if (isLogin && user) {
-      socketAPI.emit("OmBhramyaNamah", user._id);
+      socketAPI.emit("user:online", user._id);
       fetchRecentUsers();
     }
 
     return () => {
-      socketAPI.emit("OmNamahShivay", user._id);
+      socketAPI.emit("user:disconnect", user._id);
     };
   }, []);
 

@@ -44,8 +44,8 @@ const Chatting = ({ selectedFriend, currentUser }) => {
     console.log(message);
 
     const payload = {
-      senderID: user._id,
-      receiverID: receiver?._id,
+      senderId: user._id,
+      receiverId: receiver?._id,
       message,
     };
 
@@ -111,6 +111,7 @@ const Chatting = ({ selectedFriend, currentUser }) => {
         <div className="h-[70vh] w-full card p-3 overflow-y-auto bg-accent/20">
           {filteredChatData.map((chat, idx) => (
             <div
+              key={chat._id || idx}
               className={`chat ${chat.senderId !== sender._id ? "chat-receiver" : "chat-sender"}`}
             >
               <div className="chat-avatar avatar">
